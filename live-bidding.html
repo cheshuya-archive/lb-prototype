@@ -831,6 +831,125 @@ body.m button.notes .n-txt{max-width:170px}
 button.notes[data-tip]::after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 6px);z-index:30;width:max-content;max-width:320px;padding:6px 10px;border-radius:6px;background:#0a0a0a;color:#fafafa;font-size:12px;font-weight:400;line-height:16px;white-space:normal;text-align:left;box-shadow:0 6px 16px rgba(0,0,0,.18);opacity:0;visibility:hidden;transform:translateY(-2px);transition:opacity 120ms ease,transform 120ms ease,visibility 0s 120ms;pointer-events:none}
 @media (hover:hover){button.notes[data-tip]:hover::after{opacity:1;visibility:visible;transform:none;transition:opacity 150ms ease 300ms,transform 150ms ease 300ms,visibility 0s 300ms}}
 button.notes[data-tip]:focus-visible::after{opacity:1;visibility:visible;transform:none}
+
+/* ===== типы торгов ===== */
+/* слитки: цены металлов, металл лота, ставка в % */
+.mt-prices{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:6px;font-size:11px}
+.mt-prices span{display:flex;justify-content:space-between;align-items:center;gap:4px;min-width:0;height:24px;padding:0 5px;border-radius:4px;background:#fafafa;white-space:nowrap}
+.mt-prices em{font-style:normal;color:#737373}
+.mt-prices b{font-weight:500;color:#0a0a0a;font-variant-numeric:tabular-nums}
+.mt-prices .mt-gold{background:#fefce8}.mt-prices .mt-gold em{color:#a16207}
+.mt-prices .mt-platinum{background:#f0f9ff}.mt-prices .mt-platinum em{color:#0369a1}
+.mt-prices .mt-palladium{background:#fdf2f8}.mt-prices .mt-palladium em{color:#be185d}
+.mt-badge{display:inline-flex;align-items:center;height:24px;padding:0 8px;border:1px solid #d97706;border-radius:999px;background:#fffbeb;color:#b45309;font-size:14px;font-weight:500;align-self:center}
+.mt-badge.mt-silver{border-color:#a3a3a3;background:#fafafa;color:#525252}
+.mt-badge.mt-platinum{border-color:#0369a1;background:#f0f9ff;color:#0369a1}
+.mt-badge.mt-palladium{border-color:#dc2626;background:#fef2f2;color:#dc2626}
+.t-metal .bidrow{grid-template-columns:200px 300px 1fr 100px}
+.t-fix .bidrow{grid-template-columns:190px 330px 1fr 100px}
+.t-metal .bidcol:has(#cutBtn),.t-fix .bidcol{display:none}
+.t-metal .bidrow .current{order:-1}
+.t-metal .bidcol:has(#bidBtn){align-items:stretch;text-align:right}
+.t-metal .bidcol:has(#bidBtn) .bidbtn{width:274px}
+.t-metal .bidcol .sub{display:none}
+.t-metal .res>span{display:none}
+.t-metal .timer,.t-fix .timer{justify-self:center}
+.t-metal .right .feed{height:460px}
+.t-metal.role-a .right .feed{height:452px}
+.m .mt-prices{margin:0 12px 8px}
+.m .mt-badge{height:22px;font-size:12px}
+/* Fixed time: выбор суммы */
+.fx{display:flex;flex-direction:column;align-items:flex-end;gap:2px;font-size:12px;color:#737373;font-weight:500}
+.fx-top{display:flex;align-items:center;gap:8px;width:330px;justify-content:space-between;white-space:nowrap}
+.fx-chips{display:flex;gap:4px}
+.fx-chips button{height:22px;padding:0 7px;white-space:nowrap;border:0;border-radius:6px;background:#e0f2fe;color:#0369a1;font:inherit;font-size:12px;cursor:pointer;transition:background-color .15s}
+.fx-chips button:hover,.fx-chips button.on{background:#bae6fd}
+.fx-box{position:relative;display:flex;width:330px;height:44px;margin-top:4px;padding:2px;border:1px solid #e5e5e5;border-radius:10px;background:#fff}
+.fx-inp{flex:1;display:flex;align-items:center;justify-content:space-between;padding:0 10px 0 12px;border:0;background:transparent;color:#0a0a0a;font:inherit;font-size:16px;font-weight:400;cursor:pointer;border-radius:8px}
+.fx-inp svg{color:#737373;transition:transform .2s var(--ease)}
+.fx-inp[aria-expanded="true"] svg{transform:rotate(180deg)}
+.fx-bid{width:148px;border:0;border-radius:8px;background:var(--primary);color:#fafafa;font:inherit;font-size:14px;font-weight:500;cursor:pointer;transition:background-color .15s,transform .1s}
+.fx-bid:hover{background:#075985}.fx-bid:active{transform:scale(.98)}
+.fx-bid[disabled]{background:#94a3b8;cursor:not-allowed}
+.fx-list{position:absolute;z-index:20;left:0;top:calc(100% + 4px);width:154px;padding:4px;border:1px solid #e5e5e5;border-radius:8px;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.12);transform-origin:top left;animation:fxin .14s var(--ease)}
+@keyframes fxin{from{opacity:0;transform:translateY(-4px) scale(.98)}}
+.fx-list button{display:flex;width:100%;height:32px;align-items:center;justify-content:space-between;padding:0 8px;border:0;border-radius:6px;background:transparent;color:#0a0a0a;font:inherit;font-size:14px;font-weight:400;cursor:pointer;text-align:left}
+.fx-list button:hover{background:#f5f5f5}
+.fx-list button[aria-selected="true"]{background:#f0f9ff;color:#0369a1}
+.fx .sub{margin-top:6px}.fx .eur{font-size:16px;color:#0a0a0a}
+/* Зал: трансляция у участника */
+.rv{position:relative;display:grid;place-items:center;height:150px;margin-top:10px;border-radius:8px;background:#e5e5e5;color:#737373;overflow:hidden}
+.rv-live{position:absolute;left:8px;top:8px;display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 8px;border-radius:999px;background:rgba(0,0,0,.55);color:#fff;font-size:11px;font-weight:600;letter-spacing:.02em}
+.rv-live i{width:6px;height:6px;border-radius:50%;background:#ef4444;animation:rvp 1.6s ease-in-out infinite}
+@keyframes rvp{50%{opacity:.35}}
+.t-room:not(.role-a) .right .feed{height:430px}
+.m .rv{height:180px;margin:10px 12px 0}
+/* Зал: пульт аукциониста */
+.amp{position:absolute;z-index:6;right:269px;top:85px;width:270px;display:flex;flex-direction:column;gap:8px;padding:0 12px 12px;border:1px solid #e5e5e5;border-radius:10px;background:#f8fafc;animation:fxin .18s var(--ease)}
+.amp header{display:flex;align-items:center;justify-content:space-between;height:34px;margin:0 -12px;padding:0 8px 0 12px;border-bottom:1px solid #e5e5e5;background:#fff;border-radius:10px 10px 0 0;font-size:14px}
+.amp header b{font-weight:500}
+.amp-x{width:26px;height:26px;border:0;border-radius:6px;background:transparent;color:#525252;cursor:pointer}.amp-x:hover{background:#f5f5f5}
+.amp-in{display:flex;gap:6px}
+.amp-val{position:relative;flex:1;display:flex}
+.amp-val input,.amp-in>input{width:100%;height:36px;padding:0 28px 0 10px;border:1px solid #e5e5e5;border-radius:8px;background:#fff;font:inherit;font-size:14px}
+.amp-in>input{flex:1;padding-right:10px}
+.amp-val button{position:absolute;right:4px;top:6px;width:24px;height:24px;border:0;background:transparent;color:#a3a3a3;cursor:pointer}
+.amp-bid,.amp-won{flex:0 0 84px;height:36px;border:0;border-radius:8px;background:var(--primary);color:#fff;font:inherit;font-size:14px;font-weight:500;cursor:pointer}
+.amp-won{flex:0 0 120px;background:#16a34a}
+.amp-bid[disabled],.amp-won[disabled]{opacity:.45;cursor:not-allowed}
+.amp-keys{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.amp-keys button{height:30px;border:1px solid #e5e5e5;border-radius:6px;background:#fff;font:inherit;font-size:14px;cursor:pointer;transition:background-color .12s,transform .08s}
+.amp-keys button:hover{background:#f5f5f5}.amp-keys button:active{transform:scale(.96)}
+.amp-keys .is-del{color:#dc2626}
+.amp-tbl{border:1px solid #e5e5e5;border-radius:8px;background:#fff;overflow:hidden}
+.amp-th{display:grid;grid-template-columns:1fr 1fr;height:26px;align-items:center;background:#f5f5f5;font-size:12px;font-weight:600;text-align:center}
+.amp-rows{max-height:150px;overflow-y:auto;padding:4px;scrollbar-width:thin}
+.amp-rows>div{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:4px}
+.amp-rows button{height:26px;border:0;border-radius:6px;background:#f0f9ff;color:#0369a1;font:inherit;font-size:12.5px;cursor:pointer}
+.amp-rows button:hover{background:#e0f2fe}
+.amp-close{display:flex;align-items:center;justify-content:center;gap:8px;height:38px;border:0;border-radius:8px;background:#059669;color:#fff;font:inherit;font-size:14px;font-weight:500;cursor:pointer}
+.amp-close:hover{background:#047857}
+.room-am :is(.photo,.lotline,.a-info,.desc){width:605px}
+.side-hidden.room-am :is(.photo,.lotline,.a-info,.desc){width:837px}
+.side-hidden.strip-hidden.room-am :is(.photo,.lotline,.a-info,.desc){width:845px}
+.a-top .a-ico#aRoom{flex:0 0 36px}
+.t-room .a-top .a-btn{white-space:nowrap;font-size:13px}
+.t-room .a-top .a-btn.sm{flex:0 0 62px}
+.a-cancels{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.a-cancels button{display:flex;align-items:center;justify-content:center;gap:6px;height:28px;border:1px solid #fecaca;border-radius:8px;background:#fff;color:#dc2626;font:inherit;font-size:13px;cursor:pointer}
+.a-cancels button:hover{background:#fef2f2}
+.a-go{display:flex;gap:6px;margin-top:8px}
+.a-go input{flex:1;min-width:0;height:36px;padding:0 10px;border:1px solid #e5e5e5;border-radius:8px;font:inherit;font-size:14px}
+.a-go button{flex:0 0 104px;height:36px;border:0;border-radius:8px;background:#7cb7dc;color:#fff;font:inherit;font-size:14px;font-weight:500;cursor:pointer}
+.a-go button:hover{background:var(--primary)}
+.t-room.role-a .right .feed{height:430px}
+@media (prefers-reduced-motion:reduce){.rv-live i,.fx-list,.amp{animation:none}}
+
+/* фильтры нижней ленты крупнее — как в рабочей версии */
+.filters{padding:4px 6px 6px;gap:6px}
+.filters .flt{height:32px;padding:0 12px;border-radius:6px;font-size:14px;line-height:30px}
+.filters .btn-xs.lb-hide.is-strip{height:32px;padding:0 10px;border-color:transparent;background:transparent;color:#525252;font-size:14px}
+.filters .btn-xs.lb-hide.is-strip:hover{background:#f5f5f5}
+
+/* карточки лотов — как в рабочей версии: белый фон, номер и цена в одну строку, цена по результату */
+.lcard,.lcard.is-sold{background:#fff;border:2px solid #e5e5e5;border-radius:4px}
+.lcard .row{align-items:center;padding:0 2px 4px}
+.lcard .row b{font-size:16px;font-weight:600;color:#0a0a0a}
+.lcard .row .price{font-size:16px;font-weight:500;color:#0a0a0a}
+.lcard small{padding:0 2px;font-size:12px;font-weight:500;color:#0a0a0a}
+.lcard.is-sold .row,.lcard.is-sold small{color:#0a0a0a}
+.lcard.is-sold .row b{color:#0a0a0a}
+.lcard.is-sold .price{color:#dc2626}
+.lcard.is-sold.is-won .price{color:#059669!important}
+.lcard.is-unsold .price{color:#737373!important}
+.lcard.is-sold img{opacity:.85}
+/* убрана строка о частях аукциона над колонкой лотов */
+.side-sub{display:none!important}
+.side-list{top:58px}
+/* слитки: кнопка ставки и подписи выровнены по правому краю колонки, как в макете */
+.t-metal .bidrow{grid-template-columns:200px 274px 1fr 100px}
+.t-metal .bidcol:has(#bidBtn){align-items:flex-end;text-align:right}
+.t-metal .bidcol:has(#bidBtn) .bidbtn{width:274px}
 </style>
 </head>
 <body>
@@ -927,6 +1046,13 @@ button.notes[data-tip]:focus-visible::after{opacity:1;visibility:visible;transfo
   <div class="seg row" id="views"><button data-v="d" class="on">Десктоп</button><button data-v="m">Мобилка</button></div>
   <span class="lbl">Роль</span>
   <div class="seg row" id="roles"><button data-r="p" class="on">Участник</button><button data-r="a">Аукционист</button></div>
+  <span class="lbl">Тип торгов</span>
+  <div class="seg" id="types">
+    <button data-t="e" class="on">E-Auction</button>
+    <button data-t="room">Зал · Room</button>
+    <button data-t="fix">Fixed time</button>
+    <button data-t="metal">Слитки · Bullion</button>
+  </div>
   <span class="lbl">Состояние</span>
   <div class="seg" id="modes">
     <button data-m="live" class="on">▶ Торги</button>
@@ -951,10 +1077,18 @@ const TITLES=["Australia. Elizabeth II. $200 1993","France. Exposition Universel
 const DESC=[["CAMPANIA - PHISTELIA","Obole","c. 325-275 AC.","Campanie, Phistélia","silver","10","12","0,57","R1","Anépigraphe"],["FRANCE - THIRD REPUBLIC","Medal","1878","Paris","gold","63","12","118,4","R2","Republique Française"],["ATTICA - ATHENS","Tetradrachm","454-404 BC","Athens","silver","24","9","17,2","R1","Athena / Owl"]];
 const fmt=n=>Math.round(n).toLocaleString("ru-RU").replace(/\s/g," ");
 const $=id=>document.getElementById(id)||document.createElement("div");
-const step=v=>v<100000?5000:v<500000?25000:50000;
+/* Типы живых торгов (Figma 16027:56192 участник, 18183:442641 аукционист):
+   e — E-Auction (только интернет); room — Зал (трансляция, ставки из зала, пульт зала у аукциониста);
+   fix — Fixed time (нет CUTBID, ставка выбирается из списка); metal — Слитки (цены металлов, ставка в %, нет резерва и CUTBID) */
+const TYPES={e:"E-Auction",room:"Зал",fix:"Фикс. время",metal:"Слитки"};
+let TYPE=(()=>{const m=location.search.match(/[?&]type=(\w+)/);if(m&&TYPES[m[1]])return m[1];try{const v=localStorage.getItem("lb-live-type");return TYPES[v]?v:"e"}catch(e){return "e"}})();
+const METALS=[["Gold","1 889,50 $"],["Platinum","925,20 $"],["Silver","23,32 $"],["Palladium","1 289 $"]];
+function mBase(){return lots[lotIdx].start/0.95}
+const step=v=>TYPE==="metal"?mBase()*0.005:(v<100000?5000:v<500000?25000:50000);
+const fa=v=>TYPE==="metal"?String(Math.round(v/mBase()*1000)/10)+"%":fmt(v);
 let speed=1, mode="live", lotIdx=4, current=0, leaderMe=false, myBid=false, count=10, timer=null, rivalT=null, busy=false;
 const lots=Array.from({length:12},(_,i)=>({no:221+i,title:TITLES[i%TITLES.length],img:i%3,start:[150000,120000,200000,90000,300000][i%5],sold:i<4,won:i===2}));
-lots.forEach(l=>l.reserve=Math.round(l.start*1.5));
+lots.forEach((l,i)=>{l.reserve=Math.round(l.start*1.5);l.metal=["Platinum","Gold","Silver","Palladium"][i%4]});
 lots.forEach((l,i)=>{l.track=[1,3,6,8,10].includes(i);if(i===7)l.proxy=Math.round(l.start*1.4/500)*500;if(i===9)l.autobid=Math.round(l.start*1.3/500)*500});lots[3].lost=true;lots[3].price=lots[3].start*2;
 let VIEW="d";const FEED=[];let ROLE=/auctioneer/.test(location.hash+location.search)?"a":"p";const BIDS=[];let TOPBID=[0,""];let NOTE="15-minute break. Trading will resume at 3:00 PM (GMT)";
 
@@ -1000,10 +1134,10 @@ function positionStrips(){
 
 /* ---------- лот ---------- */
 const UP='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/></svg>',DOWN='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 6 5 5 5-5"/><path d="m7 13 5 5 5-5"/></svg>';
-function setDesc(){setTimeout(()=>window.aInfo&&aInfo(),0);const d=DESC[lots[lotIdx].img];$("desc").innerHTML=`<b>${d[0]}</b><br>Type : <span class="muted">${d[1]}</span> Date : <span class="muted">${d[2]}</span>&nbsp; Mint name / Town : <span class="muted">${d[3]}</span>&nbsp; Metal : <span class="muted">${d[4]}</span>&nbsp; Diameter : ${d[5]} mm&nbsp; Orientation dies : ${d[6]} h.<br>Weight : ${d[7]} g.&nbsp; Rarity : ${d[8]}&nbsp; Obverse legend : <span class="muted">${d[9]}</span><span class="d-full"><br>${Array.from({length:4},()=>`Obverse description : <span class="muted">Tête de jeune homme de trois-quart à droite</span> Reverse description : <span class="muted">Taureau androcéphale marchant à droite, la tête de face</span> Type : <span class="muted">${d[1]}</span> Date : <span class="muted">${d[2]}</span> Mint name / Town : <span class="muted">${d[3]}</span> Metal : <span class="muted">${d[4]}</span>`).join("<br>")}</span><span class="d-dots"> …</span><button type="button" class="more" data-desc="open">Show more ${UP}</button><button type="button" class="more is-close" data-desc="close">Close ${DOWN}</button>`}
+function setDesc(){setTimeout(()=>window.aInfo&&aInfo(),0);typeLot();const d=DESC[lots[lotIdx].img];$("desc").innerHTML=`<b>${d[0]}</b><br>Type : <span class="muted">${d[1]}</span> Date : <span class="muted">${d[2]}</span>&nbsp; Mint name / Town : <span class="muted">${d[3]}</span>&nbsp; Metal : <span class="muted">${d[4]}</span>&nbsp; Diameter : ${d[5]} mm&nbsp; Orientation dies : ${d[6]} h.<br>Weight : ${d[7]} g.&nbsp; Rarity : ${d[8]}&nbsp; Obverse legend : <span class="muted">${d[9]}</span><span class="d-full"><br>${Array.from({length:4},()=>`Obverse description : <span class="muted">Tête de jeune homme de trois-quart à droite</span> Reverse description : <span class="muted">Taureau androcéphale marchant à droite, la tête de face</span> Type : <span class="muted">${d[1]}</span> Date : <span class="muted">${d[2]}</span> Mint name / Town : <span class="muted">${d[3]}</span> Metal : <span class="muted">${d[4]}</span>`).join("<br>")}</span><span class="d-dots"> …</span><button type="button" class="more" data-desc="open">Show more ${UP}</button><button type="button" class="more is-close" data-desc="close">Close ${DOWN}</button>`}
 function setPrices(){
   const full=current+step(current), half=current+step(current)/2;
-  $("bidVal").textContent=fmt(full); $("cutVal").textContent=fmt(half);
+  $("bidVal").textContent=fa(full); $("cutVal").textContent=fa(half);
   $("bidSub").textContent=`${fmt(full*1.18)} USD (W/BP 18%)`; $("cutSub").textContent=`${fmt(half*1.18)} USD (W/BP 18%)`;
   $("bidEur").textContent=`${fmt(full*CUR.rate)} ${CUR.code}`; $("cutEur").textContent=`${fmt(half*CUR.rate)} ${CUR.code}`;
   
@@ -1011,15 +1145,15 @@ function setPrices(){
   $("ring").className="ring";
   $("bidBtn").disabled=$("cutBtn").disabled=leaderMe;
   if(VIEW==="m"&&ROLE!=="a"){$("bidBtn").disabled=$("cutBtn").disabled=false;$("bidBtn").classList.toggle("is-off",leaderMe&&MYBTN!=="bid");$("cutBtn").classList.toggle("is-off",leaderMe&&MYBTN!=="cut")}
-  mobileMine();
+  mobileMine();fxRender();amRefresh();
 }
 function animateAmount(to){const el=$("amount"),from=+el.dataset.v||to,t0=performance.now(),d=420;el.dataset.v=to;el.classList.remove("bump");void el.offsetWidth;el.classList.add("bump");
-  (function f(t){const k=Math.min(1,(t-t0)/d),e=1-Math.pow(1-k,3);el.textContent=fmt(from+(to-from)*e);if(k<1)requestAnimationFrame(f)})(t0)}
+  (function f(t){const k=Math.min(1,(t-t0)/d),e=1-Math.pow(1-k,3);el.textContent=fa(from+(to-from)*e);if(k<1)requestAnimationFrame(f)})(t0)}
 function feed(html,cls="fi",ah){FEED.unshift([html,cls,ah]);FEED.length=Math.min(FEED.length,40);const d=document.createElement("div");const A=ROLE==="a"&&ah;d.className=A?"fa":cls;d.innerHTML=A?ah:html;const L=$("feedList");L.prepend(d);while(L.children.length>22)L.lastChild.remove()}
 function renderFeed(){$("feedList").innerHTML=FEED.map(([h,c,a])=>{const A=ROLE==="a"&&a;return `<div class="${A?"fa":c}" style="animation:none">${A?a:h}</div>`}).join("")}
 function bid(amount,me,who){BIDS.push([current,leaderMe,TOPBID]);current=amount;leaderMe=me;if(me)myBid=true;animateAmount(current);setPrices();
-  const src=me?"me":(who||(Math.random()<.6?"Internet":"Room"));const nm=bidderName(src);TOPBID=[amount,nm];
-  feed(me?`<span class="w">Your BID:</span><span class="me">${fmt(amount)}</span>`:`<span class="w">${src==="Room"?"Room":"Internet"}:</span><span class="ot">${fmt(amount)}</span>`,"fi",`${fmt(amount)} — ${nm}`);updTop();
+  const src=me?"me":(who||(TYPE==="room"&&Math.random()<.4?"Room":"Internet"));const nm=bidderName(src);TOPBID=[amount,nm];
+  feed(me?`<span class="w">Your BID:</span><span class="me">${fa(amount)}</span>`:`<span class="w">${src==="Room"?"Room BID":"Internet"}:</span><span class="ot">${fa(amount)}</span>`,"fi",`${fa(amount)} — ${nm}`);updTop();
 
   count=10;tick(true)}
 
@@ -1036,7 +1170,7 @@ function toast(kind,title,text,ms=2400){const t=$("toast"),dur=ms/speed;t.classN
   $("ring").className="ring";const tn=$("tint");tn.className="tint light";void tn.offsetWidth;tn.classList.add("show");
   return new Promise(r=>setTimeout(()=>{t.classList.remove("show");tn.classList.remove("show");r()},dur))}
 async function hammer(forced){if(busy)return;busy=true;stopClock();$("bidrow").classList.add("locked");const l=lots[lotIdx];
-  const noRes=forced?forced==="reserve":current<l.reserve;
+  const noRes=forced?forced==="reserve":(TYPE!=="metal"&&current<l.reserve);
   const won=!noRes&&(forced?forced==="won":leaderMe), lost=!noRes&&(forced?forced==="lost":(!leaderMe&&myBid));
   l.sold=true;l.price=current;l.won=won;l.lost=lost;l.unsold=noRes;positionStrips();
   feed(noRes?`Lot ${l.no} not sold`:`Lot ${l.no} sold ${fmt(current)}`,"fsep");
@@ -1267,7 +1401,7 @@ const PEOPLE=[["Anya Petrova",1],["Klaus Heisler",1],["Naomi Nagata",1],["Alex K
 const ini=n=>n.split(" ").map(x=>x[0]).join("").slice(0,2);
 function bidderName(src){if(src==="me")return '<span class="g">Maya Thornton</span>';if(src==="Room")return "Room";
   const r=Math.random();return r<.45?"AUTO Ivan Sergeev":`<span class="g">${["Ivan Ivanov","Klaus Heisler","Naomi Nagata","Alex Kamal"][Math.floor(Math.random()*4)]}</span>`}
-function updTop(){const t=$("aTopBid");if(t&&TOPBID[0])t.innerHTML=`${fmt(TOPBID[0])} — ${TOPBID[1]}`}
+function updTop(){const t=$("aTopBid");if(t&&TOPBID[0])t.innerHTML=`${fa(TOPBID[0])} — ${TOPBID[1]}`}
 let LIMITS=[[1890,"Eddie Lake","Germany",20000,null,30000,29000,50000,60000],[1971,"Miles Grant","Egypt",30000,"ok",30000,12000,20000,0],[1904,"Naomi Nagata","Japan",0,"ok",50000,8000,15000,5000],[1998,"Caleb Thompson","Thailand",15000,null,0,0,0,0],[1964,"Owen Radley","Mexico",0,"inf",0,40000,40000,0],[1911,"Anya Petrova","Russia",0,"no",0,0,0,0],[1920,"Klaus Heisler","Austria",25000,"ok",20000,19500,30000,12000]].map(([id,name,country,request,adm,limit,spent,paid,unpaid],k)=>({id,name,country,request,adm,limit,spent,paid,unpaid,locked:false,at:k}));
 const CHATS=[["Ingrid Bergmann","Can you assist with lot 312?",1],["Omar Sharif","I'm interested in lot 318.",10],["Eva Green","I have a question about lot 324.",0],["Jean Reno","I'd like to bid on lot 330.",0],["Gerard Depardieu","I need help with lot 336.",0],["John Jackson","Hello! Can you please sold me lot 227?",10]].map(([n,t,u])=>({n,t,u,msgs:[[0,"Hello! Can you please sold me Lot 227?"]]}));
 let aPop="",aChatOpen=null,aOnlineTab="on",aChatFilter="all",amTab="bids";
@@ -1351,6 +1485,84 @@ function decorA(v){const sc=$("screen");sc.classList.add("role-a");
   sc.addEventListener("click",e=>{if(e.target.closest("[data-x]")){aPop="";aRefresh();return}aHandle(e)});
   sc.addEventListener("submit",e=>{if(e.target.id==="aMsgForm")return;aSubmit(e)});
   aInfo();bindMsg();updTop();aRefresh()}
+
+/* ================= типы торгов ================= */
+const ICO={img:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg>',
+ chev:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>',
+ check:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>',
+ stand:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="3"/><path d="M6.5 13h11l1.5 8h-14z"/><path d="M12 8v5"/></svg>',
+ ban:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>',
+ x:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></svg>',
+ ok:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>'};
+function metalsHTML(){return `<div class="mt-prices" id="mtPrices" aria-label="Цены металлов за унцию">${METALS.map(([k,v])=>`<span class="mt-${k.toLowerCase()}"><em>${k}</em><b>${v}</b></span>`).join("")}</div>`}
+function typeLot(){document.querySelectorAll(".mt-badge").forEach(b=>{const m=lots[lotIdx].metal;b.textContent=m;b.className="mt-badge mt-"+m.toLowerCase()})}
+function videoHTML(){return `<div class="rv" role="img" aria-label="Видеотрансляция из зала">${ICO.img}<span class="rv-live"><i></i>LIVE · Room</span></div>`}
+
+/* Fixed time: ставка выбирается из списка сумм (без CUT BID) */
+let FX=null;
+function fxOpts(){const s=step(current);return [1,2,3,4,5].map(k=>current+s*k)}
+function fxHTML(){return `<div class="fx" id="fx"><div class="fx-top"><div class="fx-chips" id="fxChips"></div><span>Your Bid in USD</span></div><div class="fx-box"><button type="button" class="fx-inp" id="fxInp" aria-haspopup="listbox" aria-expanded="false"><span id="fxVal"></span>${ICO.chev}</button><button type="button" class="fx-bid" id="fxBid">BID</button><div class="fx-list" id="fxList" role="listbox" aria-label="Сумма ставки" hidden></div></div><span class="sub" id="fxSub"></span><span class="eur" id="fxEur"></span></div>`}
+function fxRender(){if(!document.getElementById("fx"))return;const o=fxOpts();if(!FX||FX<=current)FX=o[0];
+  $("fxChips").innerHTML=o.slice(1,4).map(v=>`<button type="button" data-fx="${v}" class="${v===FX?"on":""}">${fmt(v)}</button>`).join("");
+  $("fxVal").textContent=fmt(FX);$("fxSub").textContent=`${fmt(FX*1.18)} USD (W/BP 18%)`;$("fxEur").textContent=`${fmt(FX*CUR.rate)} ${CUR.code}`;
+  $("fxList").innerHTML=o.map(v=>`<button type="button" role="option" aria-selected="${v===FX}" data-fx="${v}">${fmt(v)}${v===FX?ICO.check:""}</button>`).join("");
+  $("fxBid").disabled=leaderMe&&ROLE!=="a"}
+function fxOpen(on){const l=document.getElementById("fxList");if(!l)return;l.hidden=!on;$("fxInp").setAttribute("aria-expanded",String(on))}
+document.addEventListener("click",e=>{const t=e.target;
+  const o=t.closest("[data-fx]");if(o){FX=+o.dataset.fx;fxOpen(false);fxRender();return}
+  if(t.closest("#fxInp")){fxOpen(document.getElementById("fxList").hidden);return}
+  if(t.closest("#fxBid")){if(mode==="live"&&!busy){const A=ROLE==="a";bid(FX,!A,A?"Room":undefined);FX=null;fxRender()}return}
+  if(!t.closest("#fx"))fxOpen(false)});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")fxOpen(false)});
+
+/* Зал: пульт аукциониста — ставки из зала с клавиатуры, таблица CUTBID/BID, продажа участнику в зале */
+let AM_ON=true,AMV="";
+function amRows(){const s=step(current);return Array.from({length:8},(_,k)=>`<div><button type="button" data-rb="${current+s*k+s/2}">${fmt(current+s*k+s/2)}</button><button type="button" data-rb="${current+s*(k+1)}">${fmt(current+s*(k+1))}</button></div>`).join("")}
+function amHTML(){return `<section class="amp" id="amPanel" aria-label="Auction management"><header><b>Auction management</b><button type="button" class="amp-x" id="ampHide" aria-label="Скрыть пульт">✕</button></header>
+  <div class="amp-in"><label class="amp-val"><input id="ampVal" inputmode="numeric" placeholder="000" aria-label="Ставка из зала" autocomplete="off"><button type="button" id="ampClr" aria-label="Очистить">✕</button></label><button type="button" class="amp-bid" id="ampBid" disabled>Bid</button></div>
+  <div class="amp-keys">${["Delete","←",".","7","8","9","4","5","6","1","2","3",".000",".00","0"].map(k=>`<button type="button" data-k="${k}" class="${k==="Delete"?"is-del":""}">${k}</button>`).join("")}</div>
+  <div class="amp-tbl"><div class="amp-th"><span>CUTBID</span><span>BID</span></div><div class="amp-rows" id="ampRows">${amRows()}</div></div>
+  <div class="amp-in"><input id="ampPart" inputmode="numeric" placeholder="Participant №" aria-label="Номер участника в зале" autocomplete="off"><button type="button" class="amp-won" id="ampWon" disabled>Lot ${lots[lotIdx].no} won</button></div>
+  <button type="button" class="amp-close" id="ampClose">Close lot ${ICO.ok}</button></section>`}
+function amSync(){const v=document.getElementById("ampVal");if(!v)return;v.value=AMV?fmt(+AMV):"";$("ampBid").disabled=!(+AMV>current);$("ampWon").disabled=!$("ampPart").value.trim()}
+function amRefresh(){const r=document.getElementById("ampRows");if(!r)return;r.innerHTML=amRows();$("ampWon").textContent=`Lot ${lots[lotIdx].no} won`;amSync()}
+function amToggle(on){AM_ON=on;const sc=document.getElementById("screen");const p=document.getElementById("amPanel");if(on&&!p){sc.insertAdjacentHTML("beforeend",amHTML());amSync()}if(!on&&p)p.remove();sc.classList.toggle("room-am",on);const b=document.getElementById("aRoom");if(b){b.classList.toggle("on",on);b.setAttribute("aria-pressed",String(on))}}
+function roomBid(v){if(mode!=="live"||busy)return;if(!(v>current)){snack(`Ставка из зала должна быть больше ${fa(current)}`);return}bid(v,false,"Room");AMV="";amSync()}
+document.addEventListener("click",e=>{const t=e.target;if(!t.closest("#amPanel,#aRoom,.a-cancels,.a-go"))return;
+  if(t.closest("#aRoom")){amToggle(!AM_ON);return}
+  if(t.closest("#ampHide")){amToggle(false);return}
+  const k=t.closest("[data-k]");if(k){const c=k.dataset.k;AMV=c==="Delete"?"":c==="←"?AMV.slice(0,-1):c==="."?AMV:(AMV+c.replace(".","")).replace(/^0+(?=\d)/,"").slice(0,10);amSync();return}
+  if(t.closest("#ampClr")){AMV="";amSync();return}
+  if(t.closest("#ampBid")){roomBid(+AMV);return}
+  const r=t.closest("[data-rb]");if(r){roomBid(+r.dataset.rb);return}
+  if(t.closest("#ampWon")){const n=$("ampPart").value.trim();if(!n||busy||mode!=="live")return;TOPBID=[current,`Room №${n}`];leaderMe=false;myBid=false;$("ampPart").value="";hammer();return}
+  if(t.closest("#ampClose")){if(!busy&&mode==="live")hammer();return}
+  if(t.closest("#aCancelLast")){if(busy||!BIDS.length)return;const [c,lm,tb]=BIDS.pop();current=c;leaderMe=lm;TOPBID=tb;animateAmount(current);setPrices();updTop();feed("Last bid cancelled","fsep");return}
+  if(t.closest("#aCancelAll")){if(busy)return;const l=lots[lotIdx];BIDS.length=0;current=l.start;leaderMe=false;myBid=false;animateAmount(current);setPrices();feed(`All bids on lot ${l.no} cancelled`,"fsep");return}
+  if(t.closest("#aGo")){const n=+$("aGoNo").value;const i=lots.findIndex(l=>l.no===n);if(i<0){snack(`Лота №${n||"—"} нет в аукционе`);return}if(i<=lotIdx){snack("Можно перейти только к следующим лотам");return}
+    if(busy)return;(async()=>{if(mode!=="live")await setMode("live");busy=true;stopClock();$("bidrow").classList.add("locked");lots[lotIdx].sold=true;lots[lotIdx].price=current;lotIdx=i-1;positionStrips();await nextLot();busy=false;$("bidrow").classList.remove("locked");startClock();$("aGoNo").value=""})();return}});
+document.addEventListener("input",e=>{if(e.target.id==="ampVal"){AMV=e.target.value.replace(/\D/g,"").slice(0,10);amSync()}if(e.target.id==="ampPart")amSync()});
+document.addEventListener("keydown",e=>{if(e.target.id==="ampVal"&&e.key==="Enter"){e.preventDefault();roomBid(+AMV)}});
+
+function applyType(){const sc=document.getElementById("screen");if(!sc)return;["room","fix","metal"].forEach(t=>sc.classList.toggle("t-"+t,TYPE===t));
+  document.querySelectorAll("#types button").forEach(b=>b.classList.toggle("on",b.dataset.t===TYPE));
+  const A=ROLE==="a",D=VIEW==="d",M=TYPE==="metal";
+  /* подписи «Your Bid in …» */
+  const bc=document.getElementById("bidBtn");if(bc){if(D){const lb=bc.closest(".bidcol");if(lb)lb.firstElementChild.textContent=M?"Your Bid in %":"Your Bid in USD"}else{const lb=bc.previousElementSibling;if(lb)lb.textContent=M?"Your Bid in %":"Your Bid in USD";const cl=bc.querySelector(".cur-l");if(cl)cl.textContent=M?"":"USD"}}
+  /* без CUT BID: Fixed time и слитки */
+  if(!D&&(TYPE==="fix"||M)){const cb=document.getElementById("cutBtn");if(cb){[cb.previousElementSibling,cb,cb.nextElementSibling].forEach(x=>x&&(x.style.display="none"))}}
+  /* слитки: цены металлов + металл лота */
+  if(M){if(D)(A?document.querySelector(".right .a-top"):document.querySelector(".right .limit")).insertAdjacentHTML("afterend",metalsHTML());else document.querySelector(".m-row2").insertAdjacentHTML("afterend",metalsHTML());
+    document.getElementById("lotno").insertAdjacentHTML("afterend",'<span class="mt-badge"></span>');typeLot()}
+  /* Fixed time: выбор суммы из списка */
+  if(TYPE==="fix"&&D){document.querySelector("#bidrow .current").insertAdjacentHTML("afterend",fxHTML());fxRender()}
+  /* Зал: трансляция у участника, пульт зала у аукциониста */
+  if(TYPE==="room"){if(!A){if(D)document.getElementById("feed").insertAdjacentHTML("beforebegin",videoHTML());else document.getElementById("bidrow").insertAdjacentHTML("afterend",videoHTML())}
+    else if(D){document.querySelector(".right .a-top").insertAdjacentHTML("afterbegin",`<button type="button" class="a-ico" id="aRoom" aria-label="Пульт зала" title="Auction management" aria-pressed="false">${ICO.stand}</button>`);
+      const c=document.getElementById("aCancel");if(c)c.outerHTML=`<div class="a-cancels"><button type="button" id="aCancelLast">Cancel last bid ${ICO.ban}</button><button type="button" id="aCancelAll">Cancel all bids ${ICO.x}</button></div><div class="a-go"><input id="aGoNo" inputmode="numeric" placeholder="№" aria-label="Номер лота"><button type="button" id="aGo">Go to lot</button></div>`;
+      amToggle(AM_ON)}}
+}
+document.querySelectorAll("#types button").forEach(b=>b.onclick=()=>{if(b.dataset.t===TYPE||busy)return;TYPE=b.dataset.t;try{localStorage.setItem("lb-live-type",TYPE)}catch(e){}seedFeed();mount(VIEW);if(mode==="live")startClock()});
 /* панель справа */
 $("ctrlToggle").onclick=()=>{AUTO_CTRL=false;const m=document.body.classList.toggle("ctrl-min");$("ctrlToggle").textContent=m?"‹ Панель":"Скрыть панель ›";$("ctrlToggle").setAttribute("aria-expanded",!m);fit()};
 document.querySelectorAll("#roles button").forEach(b=>b.onclick=()=>{if(b.dataset.r===ROLE)return;ROLE=b.dataset.r;mount(VIEW);try{parent!==window&&parent.postMessage({lb:"role",role:ROLE==="a"?"auctioneer":"participant"},"*")}catch(e){}});
@@ -1373,15 +1585,16 @@ function mount(v){
   $("app").innerHTML=document.getElementById(v==="m"?"tplM":"tplD").innerHTML;
   document.querySelectorAll("#roles button").forEach(b=>b.classList.toggle("on",b.dataset.r===ROLE));
   if(ROLE==="a")decorA(v);else{const n=document.querySelector(".feed .note");if(n)n.innerHTML=`<em>Auctioner:</em> ${NOTE}`}
-  const l=lots[lotIdx];renderStrips();syncFollow();$("img").src=IMGS[l.img];$("lotno").textContent=l.no;$("amount").dataset.v=current;$("amount").textContent=fmt(current);
-  setDesc();setPrices();tick();renderFeed();bindScreen();mobileBidButtons();mountExtras();setCur(CUR.code);setLang(LANG);noteDot();
+  const l=lots[lotIdx];renderStrips();syncFollow();$("img").src=IMGS[l.img];$("lotno").textContent=l.no;$("amount").dataset.v=current;$("amount").textContent=fa(current);
+  setDesc();setPrices();tick();renderFeed();bindScreen();mobileBidButtons();mountExtras();setCur(CUR.code);setLang(LANG);noteDot();applyType();setPrices();
   if(busy)$("bidrow").classList.add("locked");
   if(mode!=="live"){$("bidrow").classList.add("locked");showCard(mode)}
   document.body.classList.toggle("native",v==="m"&&innerWidth<600);if(v==="m"&&innerWidth<600&&!document.body.classList.contains("ctrl-min")){document.body.classList.add("ctrl-min");AUTO_CTRL=true}setTimeout(ctrlLabel,0);if(v==="d")AUTO_SIDE=false;fit();setTimeout(()=>{if(v==="d")adapt()},0);try{history.replaceState(null,"",(v==="m"?"#mobile":"#desktop")+(ROLE==="a"?"-auctioneer":""))}catch(e){}
 }
 document.querySelectorAll("#views button").forEach(b=>b.onclick=()=>{AUTO_M=false;b.dataset.v!==VIEW&&mount(b.dataset.v)});
-const l0=lots[lotIdx];current=l0.start;
-[["Internet",l0.start-50000,"AUTO Ivan Sergeev"],["Room",l0.start-25000,"Room"]].forEach(([w,a,n])=>FEED.unshift([`<span class="w">${w}:</span><span class="ot">${fmt(a)}</span>`,"fi",`${fmt(a)} — ${n}`]));TOPBID=[l0.start-25000,"Room"];FEED.unshift([`Lot ${l0.no} open`,"fsep"]);
+function seedFeed(){const l=lots[lotIdx];FEED.length=0;BIDS.length=0;leaderMe=false;myBid=false;FX=null;current=l.start;const s=step(current),R=TYPE==="room";
+  [["Internet",current-2*s,"AUTO Ivan Sergeev"],[R?"Room":"Internet",current-s,R?"Room":'<span class="g">Ivan Ivanov</span>']].forEach(([w,a,n])=>FEED.unshift([`<span class="w">${w==="Room"?"Room BID":w}:</span><span class="ot">${fa(a)}</span>`,"fi",`${fa(a)} — ${n}`]));TOPBID=[current-s,R?"Room":'<span class="g">Ivan Ivanov</span>'];FEED.unshift([`Lot ${l.no} open`,"fsep"])}
+seedFeed();
 mount(location.hash.startsWith("#mobile")||(!location.hash.startsWith("#desktop")&&innerWidth<600)?"m":"d");startClock();
 </script>
 </body>
