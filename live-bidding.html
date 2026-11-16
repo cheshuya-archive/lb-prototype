@@ -950,6 +950,54 @@ button.notes[data-tip]:focus-visible::after{opacity:1;visibility:visible;transfo
 .t-metal .bidrow{grid-template-columns:200px 274px 1fr 100px}
 .t-metal .bidcol:has(#bidBtn){align-items:flex-end;text-align:right}
 .t-metal .bidcol:has(#bidBtn) .bidbtn{width:274px}
+
+/* цены металлов крупнее */
+.mt-prices{gap:4px;font-size:12.5px;grid-template-columns:113fr 126fr}
+.mt-prices span{height:30px;padding:0 6px;border-radius:6px;gap:4px}
+.mt-prices b{font-weight:600}
+.t-metal:not(.role-a) .right .feed{height:444px}
+.t-metal.role-a .right .feed{height:436px}
+.m .mt-prices{font-size:14px}
+.m .mt-prices span{height:32px;padding:0 10px}
+
+/* пульт зала можно открепить и перетаскивать за иконку */
+.amp-grip{width:26px;height:26px;margin-left:auto;margin-right:2px;display:grid;place-items:center;border:0;border-radius:6px;background:transparent;color:#525252;cursor:grab;touch-action:none}
+.amp-grip:hover{background:#f5f5f5;color:#0a0a0a}
+.amp-grip[aria-pressed="true"]{color:#0369a1;background:#f0f9ff}
+.amp.is-drag .amp-grip{cursor:grabbing}
+.amp header b{margin-right:auto}
+.amp.is-float{z-index:30;box-shadow:0 18px 48px rgba(15,23,42,.22)}
+.amp.is-drag{user-select:none;transition:none}
+.amp-grip:focus-visible,.amp-x:focus-visible{outline:2px solid #0369a1;outline-offset:1px}
+/* колонка лотов ближе к «Follow the auction», отступ карточек от скроллбара */
+.side-list,.role-a .side-list{top:50px}
+.side-track{padding-right:4px}
+/* индикатор на «Limits» — у текста, как у конверта */
+.a-btn .dot{position:absolute;top:8px;right:6px;margin:0}
+.a-btn.sm{padding-right:6px}
+/* валюта, язык и аккаунт чуть выше */
+.head :is(#curBtn,#langBtn,#accBtn){position:relative;top:-8px}
+
+/* место под панель прототипа справа — постоянное, чтобы она не перекрывала кнопки экрана торгов */
+.stage-wrap,body.ctrl-min .stage-wrap{right:212px}
+
+/* откреплённый пульт живёт поверх всей страницы */
+body>.amp.is-float{z-index:40;font-family:inherit}
+.room-am :is(.photo,.lotline,.a-info,.desc){transition:width 360ms var(--mv),left 360ms var(--mv),top 360ms var(--mv),height 360ms var(--mv),opacity .3s}
+
+/* блокировка ставок */
+.is-blocked :is(#bidBtn,#cutBtn,.fx-bid,.fx-inp,.fx-chips button){opacity:.45;pointer-events:none;filter:grayscale(.4)}
+.block{cursor:pointer;transition:background-color .15s,border-color .15s,color .15s}
+.block:hover{background:#f5f5f5}
+.block[aria-pressed="true"]{border-color:#fecaca;background:#fef2f2;color:#dc2626}
+body.m .m-lock{cursor:pointer}
+body.m .m-lock[aria-pressed="true"]{background:#dc2626;border-color:#dc2626;color:#fff}
+/* запрос лимита — зелёная кнопка, как в рабочей версии */
+.upbtn,body.m .m-sq.up{border-color:#059669;color:#059669;background:#fff}
+.upbtn:hover,body.m .m-sq.up:hover{background:#ecfdf5}
+.upbtn.is-wait,body.m .m-sq.up.is-wait{background:#ecfdf5}
+/* мобилка — телефон по центру окна */
+body.m:not(.native) .phone-wrap{left:56px;right:56px}
 </style>
 </head>
 <body>
@@ -1151,7 +1199,7 @@ function animateAmount(to){const el=$("amount"),from=+el.dataset.v||to,t0=perfor
   (function f(t){const k=Math.min(1,(t-t0)/d),e=1-Math.pow(1-k,3);el.textContent=fa(from+(to-from)*e);if(k<1)requestAnimationFrame(f)})(t0)}
 function feed(html,cls="fi",ah){FEED.unshift([html,cls,ah]);FEED.length=Math.min(FEED.length,40);const d=document.createElement("div");const A=ROLE==="a"&&ah;d.className=A?"fa":cls;d.innerHTML=A?ah:html;const L=$("feedList");L.prepend(d);while(L.children.length>22)L.lastChild.remove()}
 function renderFeed(){$("feedList").innerHTML=FEED.map(([h,c,a])=>{const A=ROLE==="a"&&a;return `<div class="${A?"fa":c}" style="animation:none">${A?a:h}</div>`}).join("")}
-function bid(amount,me,who){BIDS.push([current,leaderMe,TOPBID]);current=amount;leaderMe=me;if(me)myBid=true;animateAmount(current);setPrices();
+function bid(amount,me,who){if(me&&BLOCKED){snack("Ставки заблокированы — нажмите Unblock");return}BIDS.push([current,leaderMe,TOPBID]);current=amount;leaderMe=me;if(me)myBid=true;animateAmount(current);setPrices();
   const src=me?"me":(who||(TYPE==="room"&&Math.random()<.4?"Room":"Internet"));const nm=bidderName(src);TOPBID=[amount,nm];
   feed(me?`<span class="w">Your BID:</span><span class="me">${fa(amount)}</span>`:`<span class="w">${src==="Room"?"Room BID":"Internet"}:</span><span class="ot">${fa(amount)}</span>`,"fi",`${fa(amount)} — ${nm}`);updTop();
 
@@ -1486,6 +1534,17 @@ function decorA(v){const sc=$("screen");sc.classList.add("role-a");
   sc.addEventListener("submit",e=>{if(e.target.id==="aMsgForm")return;aSubmit(e)});
   aInfo();bindMsg();updTop();aRefresh()}
 
+/* ================= блокировка ставок ================= */
+/* «Block» защищает от случайной ставки: кнопки ставок не нажимаются, пока не нажать «Unblock» (на телефоне — замок в шапке) */
+let BLOCKED=false;
+const LOCK='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',UNLOCK='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>';
+function syncBlock(){const sc=document.getElementById("screen");if(sc)sc.classList.toggle("is-blocked",BLOCKED);
+  document.querySelectorAll("#screen .block").forEach(b=>{b.innerHTML=BLOCKED?`Unblock ${UNLOCK}`:`Block ${LOCK}`;b.setAttribute("aria-pressed",String(BLOCKED));b.title=BLOCKED?"Разблокировать ставки":"Заблокировать ставки"});
+  const m=document.querySelector(".m-row2 .m-sq.dark");if(m){m.setAttribute("role","button");m.tabIndex=0;m.classList.add("m-lock");m.setAttribute("aria-pressed",String(BLOCKED));m.setAttribute("aria-label",BLOCKED?"Разблокировать ставки":"Заблокировать ставки");m.innerHTML=BLOCKED?LOCK:UNLOCK}}
+function toggleBlock(){BLOCKED=!BLOCKED;syncBlock();snack(BLOCKED?"Ставки заблокированы":"Ставки разблокированы")}
+document.addEventListener("click",e=>{if(e.target.closest("#screen .block,#screen .m-lock"))toggleBlock()});
+document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.closest&&e.target.closest(".m-lock")){e.preventDefault();toggleBlock()}});
+
 /* ================= типы торгов ================= */
 const ICO={img:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg>',
  chev:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>',
@@ -1493,6 +1552,7 @@ const ICO={img:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stro
  stand:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="3"/><path d="M6.5 13h11l1.5 8h-14z"/><path d="M12 8v5"/></svg>',
  ban:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>',
  x:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></svg>',
+ grip:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M2 12h20"/><path d="m15 19-3 3-3-3M19 9l3 3-3 3M9 5l3-3 3 3M5 15l-3-3 3-3"/></svg>',
  ok:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>'};
 function metalsHTML(){return `<div class="mt-prices" id="mtPrices" aria-label="Цены металлов за унцию">${METALS.map(([k,v])=>`<span class="mt-${k.toLowerCase()}"><em>${k}</em><b>${v}</b></span>`).join("")}</div>`}
 function typeLot(){document.querySelectorAll(".mt-badge").forEach(b=>{const m=lots[lotIdx].metal;b.textContent=m;b.className="mt-badge mt-"+m.toLowerCase()})}
@@ -1516,9 +1576,9 @@ document.addEventListener("click",e=>{const t=e.target;
 document.addEventListener("keydown",e=>{if(e.key==="Escape")fxOpen(false)});
 
 /* Зал: пульт аукциониста — ставки из зала с клавиатуры, таблица CUTBID/BID, продажа участнику в зале */
-let AM_ON=true,AMV="";
+let AM_ON=true,AMV="",AMF=null;/* AMF — позиция откреплённого пульта {x,y} в окне браузера: его можно увести за пределы экрана торгов */
 function amRows(){const s=step(current);return Array.from({length:8},(_,k)=>`<div><button type="button" data-rb="${current+s*k+s/2}">${fmt(current+s*k+s/2)}</button><button type="button" data-rb="${current+s*(k+1)}">${fmt(current+s*(k+1))}</button></div>`).join("")}
-function amHTML(){return `<section class="amp" id="amPanel" aria-label="Auction management"><header><b>Auction management</b><button type="button" class="amp-x" id="ampHide" aria-label="Скрыть пульт">✕</button></header>
+function amHTML(){return `<section class="amp" id="amPanel" aria-label="Auction management"><header><b>Auction management</b><button type="button" class="amp-grip" id="ampGrip" aria-label="Открепить и перетащить пульт" title="Потяните, чтобы открепить и переместить. Нажмите — вернуть на место">${ICO.grip}</button><button type="button" class="amp-x" id="ampHide" aria-label="Скрыть пульт">✕</button></header>
   <div class="amp-in"><label class="amp-val"><input id="ampVal" inputmode="numeric" placeholder="000" aria-label="Ставка из зала" autocomplete="off"><button type="button" id="ampClr" aria-label="Очистить">✕</button></label><button type="button" class="amp-bid" id="ampBid" disabled>Bid</button></div>
   <div class="amp-keys">${["Delete","←",".","7","8","9","4","5","6","1","2","3",".000",".00","0"].map(k=>`<button type="button" data-k="${k}" class="${k==="Delete"?"is-del":""}">${k}</button>`).join("")}</div>
   <div class="amp-tbl"><div class="amp-th"><span>CUTBID</span><span>BID</span></div><div class="amp-rows" id="ampRows">${amRows()}</div></div>
@@ -1526,7 +1586,17 @@ function amHTML(){return `<section class="amp" id="amPanel" aria-label="Auction 
   <button type="button" class="amp-close" id="ampClose">Close lot ${ICO.ok}</button></section>`}
 function amSync(){const v=document.getElementById("ampVal");if(!v)return;v.value=AMV?fmt(+AMV):"";$("ampBid").disabled=!(+AMV>current);$("ampWon").disabled=!$("ampPart").value.trim()}
 function amRefresh(){const r=document.getElementById("ampRows");if(!r)return;r.innerHTML=amRows();$("ampWon").textContent=`Lot ${lots[lotIdx].no} won`;amSync()}
-function amToggle(on){AM_ON=on;const sc=document.getElementById("screen");const p=document.getElementById("amPanel");if(on&&!p){sc.insertAdjacentHTML("beforeend",amHTML());amSync()}if(!on&&p)p.remove();sc.classList.toggle("room-am",on);const b=document.getElementById("aRoom");if(b){b.classList.toggle("on",on);b.setAttribute("aria-pressed",String(on))}}
+function amPlace(){const sc=document.getElementById("screen"),p=document.getElementById("amPanel");
+  /* закреплённый пульт сужает фото и описание; закрыт или откреплён — блоки занимают всё место */
+  if(sc)sc.classList.toggle("room-am",!!p&&AM_ON&&!AMF);if(!p)return;
+  const k=sc?sc.getBoundingClientRect().width/1440:1;
+  if(AMF){if(p.parentElement!==document.body)document.body.appendChild(p);p.classList.add("is-float");
+    const w=p.offsetWidth*k,h=p.offsetHeight*k;AMF.x=Math.min(innerWidth-w-4,Math.max(4,AMF.x));AMF.y=Math.min(innerHeight-h-4,Math.max(4,AMF.y));
+    Object.assign(p.style,{position:"fixed",left:AMF.x+"px",top:AMF.y+"px",right:"auto",transform:`scale(${k})`,transformOrigin:"0 0"})}
+  else{if(sc&&p.parentElement!==sc)sc.appendChild(p);p.classList.remove("is-float");p.style.cssText=""}
+  const g=document.getElementById("ampGrip");if(g)g.setAttribute("aria-pressed",String(!!AMF))}
+addEventListener("resize",()=>setTimeout(amPlace,60));
+function amToggle(on){AM_ON=on;const sc=document.getElementById("screen");const p=document.getElementById("amPanel");if(on&&!p){sc.insertAdjacentHTML("beforeend",amHTML());amSync()}if(!on&&p)p.remove();amPlace();const b=document.getElementById("aRoom");if(b){b.classList.toggle("on",on);b.setAttribute("aria-pressed",String(on))}}
 function roomBid(v){if(mode!=="live"||busy)return;if(!(v>current)){snack(`Ставка из зала должна быть больше ${fa(current)}`);return}bid(v,false,"Room");AMV="";amSync()}
 document.addEventListener("click",e=>{const t=e.target;if(!t.closest("#amPanel,#aRoom,.a-cancels,.a-go"))return;
   if(t.closest("#aRoom")){amToggle(!AM_ON);return}
@@ -1541,10 +1611,17 @@ document.addEventListener("click",e=>{const t=e.target;if(!t.closest("#amPanel,#
   if(t.closest("#aCancelAll")){if(busy)return;const l=lots[lotIdx];BIDS.length=0;current=l.start;leaderMe=false;myBid=false;animateAmount(current);setPrices();feed(`All bids on lot ${l.no} cancelled`,"fsep");return}
   if(t.closest("#aGo")){const n=+$("aGoNo").value;const i=lots.findIndex(l=>l.no===n);if(i<0){snack(`Лота №${n||"—"} нет в аукционе`);return}if(i<=lotIdx){snack("Можно перейти только к следующим лотам");return}
     if(busy)return;(async()=>{if(mode!=="live")await setMode("live");busy=true;stopClock();$("bidrow").classList.add("locked");lots[lotIdx].sold=true;lots[lotIdx].price=current;lotIdx=i-1;positionStrips();await nextLot();busy=false;$("bidrow").classList.remove("locked");startClock();$("aGoNo").value=""})();return}});
+/* перетаскивание пульта за иконку: потянуть — открепить и переместить, нажать без движения — вернуть на место */
+let AMD=null;
+document.addEventListener("pointerdown",e=>{const g=e.target.closest&&e.target.closest("#ampGrip");if(!g)return;e.preventDefault();const p=document.getElementById("amPanel"),pr=p.getBoundingClientRect();
+  AMD={sx:e.clientX,sy:e.clientY,x0:pr.left,y0:pr.top,moved:false};g.setPointerCapture&&g.setPointerCapture(e.pointerId);p.classList.add("is-drag")});
+document.addEventListener("pointermove",e=>{if(!AMD)return;const dx=e.clientX-AMD.sx,dy=e.clientY-AMD.sy;if(!AMD.moved&&Math.abs(dx)+Math.abs(dy)<4)return;AMD.moved=true;AMF={x:AMD.x0+dx,y:AMD.y0+dy};amPlace()});
+document.addEventListener("pointerup",()=>{if(!AMD)return;const p=document.getElementById("amPanel");if(p)p.classList.remove("is-drag");if(!AMD.moved&&AMF){AMF=null;amPlace()}AMD=null});
+document.addEventListener("keydown",e=>{if(e.target.id==="ampGrip"&&(e.key==="Enter"||e.key===" ")){e.preventDefault();if(AMF)AMF=null;else{const r=document.getElementById("amPanel").getBoundingClientRect();AMF={x:r.left-40,y:r.top+40}}amPlace();const g=document.getElementById("ampGrip");g&&g.focus()}});
 document.addEventListener("input",e=>{if(e.target.id==="ampVal"){AMV=e.target.value.replace(/\D/g,"").slice(0,10);amSync()}if(e.target.id==="ampPart")amSync()});
 document.addEventListener("keydown",e=>{if(e.target.id==="ampVal"&&e.key==="Enter"){e.preventDefault();roomBid(+AMV)}});
 
-function applyType(){const sc=document.getElementById("screen");if(!sc)return;["room","fix","metal"].forEach(t=>sc.classList.toggle("t-"+t,TYPE===t));
+function applyType(){const sc=document.getElementById("screen");if(!sc)return;if(!(TYPE==="room"&&ROLE==="a"&&VIEW==="d")){const ap=document.getElementById("amPanel");if(ap)ap.remove()}["room","fix","metal"].forEach(t=>sc.classList.toggle("t-"+t,TYPE===t));
   document.querySelectorAll("#types button").forEach(b=>b.classList.toggle("on",b.dataset.t===TYPE));
   const A=ROLE==="a",D=VIEW==="d",M=TYPE==="metal";
   /* подписи «Your Bid in …» */
@@ -1577,7 +1654,7 @@ function adapt(){const w=innerWidth;const native=w<600;document.body.classList.t
   if(VIEW==="m"&&AUTO_M&&w>=768){AUTO_M=false;mount("d");return true}
   const sc=document.getElementById("screen");if(VIEW==="d"&&sc){if(w<1200&&!sc.classList.contains("side-hidden")){sc.classList.add("side-hidden");AUTO_SIDE=true}else if(w>=1200&&AUTO_SIDE){sc.classList.remove("side-hidden");AUTO_SIDE=false}}
   return false}
-function fit(){const cw=56;/* панель режимов лежит поверх и не меняет масштаб экрана торгов */const W=innerWidth-cw-24,H=innerHeight-24;const sc=$("screen");if(VIEW==="m"&&document.body.classList.contains("native")){sc.style.transform="none";return}if(VIEW==="m"){const k=Math.min(1,H/sc.offsetHeight,W/sc.offsetWidth);sc.style.transform=`translate(-50%,-50%) scale(${k})`;return}const s=Math.min(W/1440,H/1024);sc.style.transform=`translate(-50%,-50%) scale(${s})`}
+function fit(){const cw=VIEW==="d"?212:56;/* на десктопе место под панель прототипа зарезервировано всегда — открытая панель ничего не перекрывает и не двигает экран *//* панель режимов лежит поверх и не меняет масштаб экрана торгов */const W=innerWidth-cw-24,H=innerHeight-24;const sc=$("screen");if(VIEW==="m"&&document.body.classList.contains("native")){sc.style.transform="none";return}if(VIEW==="m"){const k=Math.min(1,H/sc.offsetHeight,W/sc.offsetWidth);sc.style.transform=`translate(-50%,-50%) scale(${k})`;return}const s=Math.min(W/1440,H/1024);sc.style.transform=`translate(-50%,-50%) scale(${s})`}
 addEventListener("resize",()=>{if(!adapt())fit()});
 function mount(v){
   VIEW=v;document.body.classList.toggle("m",v==="m");
@@ -1586,7 +1663,7 @@ function mount(v){
   document.querySelectorAll("#roles button").forEach(b=>b.classList.toggle("on",b.dataset.r===ROLE));
   if(ROLE==="a")decorA(v);else{const n=document.querySelector(".feed .note");if(n)n.innerHTML=`<em>Auctioner:</em> ${NOTE}`}
   const l=lots[lotIdx];renderStrips();syncFollow();$("img").src=IMGS[l.img];$("lotno").textContent=l.no;$("amount").dataset.v=current;$("amount").textContent=fa(current);
-  setDesc();setPrices();tick();renderFeed();bindScreen();mobileBidButtons();mountExtras();setCur(CUR.code);setLang(LANG);noteDot();applyType();setPrices();
+  setDesc();setPrices();tick();renderFeed();bindScreen();mobileBidButtons();mountExtras();setCur(CUR.code);setLang(LANG);noteDot();applyType();setPrices();syncBlock();
   if(busy)$("bidrow").classList.add("locked");
   if(mode!=="live"){$("bidrow").classList.add("locked");showCard(mode)}
   document.body.classList.toggle("native",v==="m"&&innerWidth<600);if(v==="m"&&innerWidth<600&&!document.body.classList.contains("ctrl-min")){document.body.classList.add("ctrl-min");AUTO_CTRL=true}setTimeout(ctrlLabel,0);if(v==="d")AUTO_SIDE=false;fit();setTimeout(()=>{if(v==="d")adapt()},0);try{history.replaceState(null,"",(v==="m"?"#mobile":"#desktop")+(ROLE==="a"?"-auctioneer":""))}catch(e){}
