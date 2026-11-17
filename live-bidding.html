@@ -691,6 +691,16 @@ button.notes.has-note{background:#fefce8;color:#a16207}
 .lb-note{position:absolute;z-index:46;width:320px;display:flex;flex-direction:column;gap:10px;padding:12px;border:1px solid #e5e5e5;border-radius:8px;background:#fff;box-shadow:0 12px 32px rgba(9,9,11,.14);opacity:0;visibility:hidden;transform:translateY(-4px);transition:opacity 150ms ease,transform 150ms ease,visibility 0s 150ms}
 .lb-note.on{opacity:1;visibility:visible;transform:none;transition:opacity 180ms cubic-bezier(.23,1,.32,1),transform 180ms cubic-bezier(.23,1,.32,1)}
 .lb-note .ln-t{font-size:14px;font-weight:600}
+.lb-note header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.lb-note .ln-x{display:grid;width:24px;height:24px;place-items:center;padding:0;border:0;border-radius:6px;background:none;color:#737373;cursor:pointer}.lb-note .ln-x:hover{background:#f5f5f5;color:#0a0a0a}
+.ln-sub{margin:0;font-size:14px;font-weight:600}.ln-sub span{color:#0369a1}
+.ln-text small{font-size:13px;color:#0a0a0a}.ln-text p{margin:2px 0 0;font-size:14px;line-height:20px;overflow-wrap:anywhere;white-space:pre-wrap}
+.ln-acts{display:flex;align-items:center;justify-content:flex-end;gap:8px}.ln-tools{display:flex;gap:6px;margin-right:auto}
+.ln-mini{display:grid;width:28px;height:28px;place-items:center;padding:0;border:1px solid #e5e5e5;border-radius:6px;background:#fff;color:#0a0a0a;cursor:pointer}.ln-mini:hover{background:#e0f2fe;color:#0369a1}
+.ln-mini.is-danger{border-color:#fecaca;color:#dc2626}.ln-mini.is-danger:hover{background:#fef2f2;color:#dc2626}
+.lb-note-m{display:flex;flex-direction:column;gap:10px}.lb-note-m .ln-sub{font-size:16px;font-weight:500}.lb-note-m .ln-tools{margin:0}.lb-note-m .ln-mini{width:32px;height:32px}
+.ln-acts.is-m{margin-top:14px}.ln-acts.is-m .lb-b{flex:1}
+
 .lb-note textarea,.m-sh-body textarea{width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid #e5e5e5;border-radius:8px;font:inherit;font-size:14px;line-height:20px;resize:none;outline:0}
 .lb-note textarea:focus,.m-sh-body textarea:focus,.m-sh-body input:focus{border-color:#0369a1;box-shadow:0 0 0 3px rgba(3,105,161,.15)}
 .ln-acts{display:flex;justify-content:flex-end;gap:8px}.ln-acts .is-primary{flex:none}
@@ -1337,10 +1347,16 @@ function setCur(c){const x=CURS.find(v=>v[0]===c)||CURS[0];CUR={code:x[0],rate:x
 function setLang(k){LANG=k==="en"?"en":"ru";lss("lb-lang",LANG);document.querySelectorAll("#langFlag").forEach(e=>e.innerHTML=FLAG[LANG])}
 /* заметки */
 function noteDot(){const n=NOTES[lots[lotIdx].no];document.querySelectorAll("[data-notes]").forEach(b=>{b.classList.toggle("has-note",!!n);const t=b.querySelector(".n-txt");if(t)t.textContent=n||"User Notes";if(n){b.dataset.tip=n;b.setAttribute("aria-label","Заметка: "+n)}else{delete b.dataset.tip;b.removeAttribute("aria-label")}})}
-function openNotes(btn){let pop=document.getElementById("notePop");const sc=document.getElementById("screen");if(!pop){sc.insertAdjacentHTML("beforeend",'<div class="lb-note" id="notePop" role="dialog" aria-label="User Notes"><b class="ln-t"></b><textarea id="noteTa" rows="4" placeholder="Заметка к лоту — видна только вам"></textarea><div class="ln-acts"><button type="button" class="lb-b is-outline" data-note="cancel">Cancel</button><button type="button" class="lb-b is-primary" data-note="save">Save</button></div></div>');pop=document.getElementById("notePop")}
+/* заметка к лоту — единый вид по Figma 17894:243347: заголовок + ✕, «Lot 224» (номер синим);
+   пустая — поле и Cancel/Save, заполненная — текст и кнопки «изменить»/«удалить» слева */
+const NP={pen:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.38 3.62a1 1 0 0 1 3 3L7.37 18.64a2 2 0 0 1-.86.5l-2.87.84a.5.5 0 0 1-.62-.62l.84-2.87a2 2 0 0 1 .5-.86z"/></svg>',bin:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>',x:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>'};
+function noteBody(no,edit,id){const n=NOTES[no]||"";return `<p class="ln-sub">Lot <span>${no}</span></p>`+(edit?`<textarea id="${id}" rows="4" placeholder="Write a note about this Lot…">${n.replace(/</g,"&lt;")}</textarea>`:`<div class="ln-text"><small>Note</small><p>${n.replace(/</g,"&lt;")}</p></div>`)}
+function noteTools(edit){return edit?"":`<span class="ln-tools"><button type="button" class="ln-mini" data-note="edit" aria-label="Edit note" title="Edit">${NP.pen}</button><button type="button" class="ln-mini is-danger" data-note="del" aria-label="Delete note" title="Delete">${NP.bin}</button></span>`}
+function renderNote(edit){const pop=document.getElementById("notePop"),no=lots[lotIdx].no;pop.innerHTML=`<header><b class="ln-t">Notes on Lot</b><button type="button" class="ln-x" data-note="cancel" aria-label="Close">${NP.x}</button></header>${noteBody(no,edit,"noteTa")}<div class="ln-acts">${noteTools(edit)}<button type="button" class="lb-b is-outline" data-note="cancel">Cancel</button><button type="button" class="lb-b is-primary" data-note="${edit?"save":"cancel"}">Save</button></div>`;if(edit)setTimeout(()=>{const ta=document.getElementById("noteTa");ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length)},40)}
+function openNotes(btn){let pop=document.getElementById("notePop");const sc=document.getElementById("screen");if(!pop){sc.insertAdjacentHTML("beforeend",'<div class="lb-note" id="notePop" role="dialog" aria-label="Notes on Lot"></div>');pop=document.getElementById("notePop")}
   if(pop.classList.contains("on")){pop.classList.remove("on");return}
-  const no=lots[lotIdx].no;pop.querySelector(".ln-t").textContent=`Lot ${no} · User Notes`;pop.querySelector("textarea").value=NOTES[no]||"";
-  const k=sc.getBoundingClientRect().width/1440,r=btn.getBoundingClientRect(),b=sc.getBoundingClientRect();pop.style.left=((r.left-b.left)/k)+"px";pop.style.top=((r.bottom-b.top)/k+6)+"px";requestAnimationFrame(()=>pop.classList.add("on"));setTimeout(()=>pop.querySelector("textarea").focus(),60)}
+  const no=lots[lotIdx].no;renderNote(!NOTES[no]);
+  const k=sc.getBoundingClientRect().width/1440,r=btn.getBoundingClientRect(),b=sc.getBoundingClientRect();pop.style.left=((r.left-b.left)/k)+"px";pop.style.top=((r.bottom-b.top)/k+6)+"px";requestAnimationFrame(()=>pop.classList.add("on"))}
 function saveNote(v){const no=lots[lotIdx].no;if(v&&v.trim())NOTES[no]=v.trim();else delete NOTES[no];noteDot();snack(v&&v.trim()?`Заметка к лоту ${no} сохранена`:`Заметка к лоту ${no} удалена`)}
 /* мобильная шторка внутри телефона */
 function mSheet(kind){const ph=document.querySelector(".phone");if(!ph)return;let w=document.getElementById("mSheet");
@@ -1354,7 +1370,7 @@ function mSheet(kind){const ph=document.querySelector(".phone");if(!ph)return;le
     <button type="button" class="mnav-row" data-flash="Смена аккаунта — в прототипе отключена">${IC.users}<span class="mnav-row-main">Сменить аккаунт</span></button>
     <button type="button" class="mnav-row is-danger" data-flash="Выход — в прототипе отключён">${IC.out}<span class="mnav-row-main">Выйти</span></button>
     <div class="mnav-user"><span class="lm-av">${IC.user}</span><div><strong>Jean Reno</strong><span>m@example.com</span></div></div></div>`}
-  else if(kind==="notes"){const no=lots[lotIdx].no;t.textContent=`Lot ${no} · User Notes`;b.innerHTML=`<textarea id="mNoteTa" rows="5" placeholder="Заметка к лоту — видна только вам">${(NOTES[no]||"").replace(/</g,"&lt;")}</textarea><button type="button" class="lb-b is-primary ms-wide" data-note="msave">Save</button>`}
+  else if(kind==="notes"){const no=lots[lotIdx].no,ed=!NOTES[no]||b.dataset.noteEdit==="1";delete b.dataset.noteEdit;t.textContent="Notes on Lot";b.innerHTML=`<div class="lb-note-m">${noteBody(no,ed,"mNoteTa")}${noteTools(ed)}</div><div class="ln-acts is-m"><button type="button" class="lb-b is-primary" data-note="${ed?"msave":"mclose"}">Save</button></div>`}
   else if(kind==="limit"){t.textContent="Request a limit increase";b.innerHTML=`<p class="ms-hint">Current limit: <b>5 000 000 $</b></p><input id="mLimitInp" inputmode="numeric" enterkeyhint="send" placeholder="Amount, USD" aria-label="Amount"><button type="button" class="lb-b is-primary ms-wide" id="mLimitSend" disabled>${DCHV}Request limit</button>`}
   requestAnimationFrame(()=>w.classList.add("on"))}
 const DCHV='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/></svg>';
@@ -1367,7 +1383,9 @@ document.addEventListener("click",e=>{const t=e.target;const mob=document.body.c
   const l=t.closest("[data-lang]");if(l){setLang(l.dataset.lang);if(mob)mSheet("menu");else openMenu(null);return}
   const m=document.getElementById("lbMenu");if(m&&m.classList.contains("on")&&!t.closest("#lbMenu"))openMenu(null);
   const nb=t.closest("[data-notes]");if(nb){if(mob)mSheet("notes");else openNotes(nb);return}
-  const na=t.closest("[data-note]");if(na){const k=na.dataset.note;if(k==="save")saveNote(document.getElementById("noteTa").value);if(k==="msave"){saveNote(document.getElementById("mNoteTa").value);mSheet(null);return}document.getElementById("notePop").classList.remove("on");return}
+  const na=t.closest("[data-note]");if(na){const k=na.dataset.note,inM=!!na.closest(".m-sh-body");
+    if(inM){if(k==="edit"){const b=na.closest(".m-sh-body");b.dataset.noteEdit="1";mSheet("notes");return}if(k==="del"){saveNote("");mSheet(null);return}if(k==="msave"){saveNote(document.getElementById("mNoteTa").value);mSheet(null);return}if(k==="mclose"){mSheet(null);return}}
+    if(k==="edit"){renderNote(true);return}if(k==="del")saveNote("");if(k==="save")saveNote(document.getElementById("noteTa").value);document.getElementById("notePop").classList.remove("on");return}
   const np=document.getElementById("notePop");if(np&&np.classList.contains("on")&&!t.closest("#notePop"))np.classList.remove("on");
   if(t.closest("#mMenuBtn")){mSheet("menu");return}
   if(t.closest("#mUpBtn")){mSheet("limit");return}
